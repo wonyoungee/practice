@@ -1,0 +1,435 @@
+<실습 목표>
+
+4.0 프레임워크 구조의 기술적 이해
+- 비즈니스 로직의 동적 구성 및 실행
+- 의존성 관리
+- 비동기 처리
+
+모던 자바스크립트의 이해
+- promise chain, async herable, middleave pattern
+- decoratorbeen container
+- async/await, promise, pub/sub pattern
+
+<개발환경>
+- express(db X json file O)
+- typescript
+- html
+
+
+<실습내용>
+오늘부터 한 거 계속 리팩토링..
+내일 4시까지.
+오늘 한거는 push해놓기.
+
+로그인
+- 유저별 정책 로드(관리자:모든권한, 일반:생성권한, 읽기 권한)
+>>정책실행 - 새로운 정책 추가하기
+>>성공시 - 유저별 화면 다르게(버튼 목록 다르게)
+>>실패시 - 에러 메세지
+
+
+버튼 목록
+- 신규버튼
+- 목록보기 버튼
+ >> 지정된 유저
+
+------------------------------------------------------------------
+
+> npm init
+> npm install express
+
+실행하기
+> node 파일경로
+
+package.json 고쳐서 실행
+"scripts": {
+    "start": "node ./src/server/server.js",	// 추가
+> npm run start
+
+
+정적파일 로드하기
+public 디렉토리에 정적파일(login.html) 작성.
+server.js에 app.use(express.static('public'));추가
+
+-----------------------------------------------------------------
+
+
+-login.html
+id
+pw
+로그인버튼
+
+-main.html : 로그인이 되면 이동되는 페이지 (window팝업 or layer 팝업)
+신규버튼   register.html(팝업)     				id/pw 받음
+(기능 : 관리자와 write권한이 있는 유저만 보인다.)		com_code - 회사코드 - select(70000,80000,90000)
+(클릭시 팝업 열고 이전 화면은 클릭 안되게, 			admin - 체크박스로 추가 (admin 체크시 write,read 두가지 권한 가짐)
+등록 팝업이 닫히면 클릭 가능하게 한다.)			permission(write, read)권한 - 체크박스로 추가 
+							
+
+목록버튼   list.html(팝업)             				id/pw/permission 목록 보여줌 (목록 뿌리면 됨)
+(기능 : 서버에서 체크 - 목록버튼 클릭시 해당 유저가 read권한이 있는지 체크. 없으면 alert)
+
+							db는 없고 user.json 사용. - json 데이터 설계.. - 저장시 파일에 쓰면되고, 뿌릴때는 파일을 읽으면됨.
+							처음에 user.json에 admin계정 하나 넣어놓기. (로그인해야하므로)
+
+
+
+템플릿 엔진 ejs쓴다.
+뷰엔진 = cshtml
+defualt 경로는 views 폴더. (템플릿 루트)
+session-서버에 저장 / 쿠기-클라이언트에 저장.
+
+성공한 user정보 - 분기처리.
+
+-------------------------------------------------------------------------------------
+<server.js>
+const express = require('express')
+var path = require('path');
+const fs = require('fs')
+// const session = require("express-session");
+// const FileStore = require("session-file-store")(session);
+
+const app = express()
+const port = 3000
+
+var bodyParser = require('body-parser')
+app.set('view engine', 'ejs');
+app.use(express.static('public'))
+app.set('view engine','ejs'); // 1
+
+app.use(bodyParser.urlencoded({ extended : false }));
+app.use(bodyParser.json())
+
+// app.use(
+//     session({
+//         secret: "secret key",
+//         resave: false,
+//         saveUninitialized: true,
+//         store: new FileStore(),
+//     })
+// );
+//restfull형식
+app.get('/', (req, res) => {
+
+    let info
+    let dataJSON
+    let dataBuffer
+    try{
+    dataBuffer = fs.readFileSync('first-json.json')
+    dataJSON = dataBuffer.toString()
+    info = JSON.parse(dataJSON)
+    }
+    catch(e){
+        let data  = {
+            "users":{"admin":{"pwd":"admin","com_code":70000,"admin":true,"permission":["read","write"]}}
+            
+        }
+       
+       
+        const userJSON = JSON.stringify(data)
+    fs.writeFileSync('first-json.json',userJSON)
+    }
+
+    
+    res.sendFile(path.resolve('public/login.html'));
+
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+
+app.post('/login/', (req, res) => {
+
+    let info
+    let dataJSON
+    let dataBuffer
+    
+    dataBuffer = fs.readFileSync('first-json.json')
+    dataJSON = dataBuffer.toString()
+    info = JSON.parse(dataJSON)
+
+    if(!(req.body.userId in info['users'])){
+        res.send("해당 계정은 존재하지 않습니다!.")
+    }
+    if(req.body.userPwd != info['users'][req.body.userId]['pwd']){
+        res.send("바밀 번호가 일치하지 않습니다!.")
+    }
+    
+    let permission_list = info['users'][req.body.userId]['permission']
+    let permission_value
+    if(permission_list.length == 0){
+        permission_value = 0
+    }
+    else if(permission_list.length == 2){
+        permission_value = 3
+    }
+    else{
+        permission_value = "read" in permission_list? 1:2
+    }
+
+    // 0: none, 1: read, 2: write, 3: admin
+    // console.log(permission_value)
+    res.render('main', {"permission":permission_value})
+    
+    
+})
+
+app.get('/list/', (req, res) => {
+    let info
+    let dataJSON
+    let dataBuffer
+    
+    dataBuffer = fs.readFileSync('first-json.json')
+    dataJSON = dataBuffer.toString()
+    info = JSON.parse(dataJSON)
+
+    let user_keys = Object.keys(info.users)
+    let user_values = Object.values(info.users)
+
+    // console.log(user_keys,user_values)
+
+    res.render('list', {"user_keys":user_keys, "user_values": user_values})
+})
+
+
+
+app.get('/new/', (req, res) => {
+    
+    res.sendFile(path.resolve('public/register.html'));
+})
+
+app.post('/register/', (req, res) => {
+    let info
+    let dataJSON
+    let dataBuffer
+    
+    dataBuffer = fs.readFileSync('first-json.json')
+    dataJSON = dataBuffer.toString()
+    info = JSON.parse(dataJSON)
+    
+    if(req.body.userId in info['users']){
+        res.send("해당 계정은 이미 존재합니다!.")
+    }
+
+    info['users'][req.body.userId] = {}
+    info['users'][req.body.userId]['pwd'] = req.body.userPwd
+    info['users'][req.body.userId]['com_code'] = req.body.com_code
+    info['users'][req.body.userId]['admin'] = req.body.admin == undefined?false:true
+    info['users'][req.body.userId]['permission'] = req.body.permission == undefined? []:req.body.permission
+
+    // info["users"][req.body.userId]["pwd"] = req.body.userPwd
+
+    
+    const infoJSON = JSON.stringify(info)
+    fs.writeFileSync('first-json.json',infoJSON)
+
+    res.sendFile(path.resolve('public/main.html'));
+})
+
+<list.ejs>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>user list</h1>
+    <% for(var i = 0; i < user_keys.length; i++){ %> 
+        <%= user_keys[i] %>
+        <br>
+        <%= user_values[i].pwd %>
+       <% } %>
+
+</body>
+</html>
+
+
+<register.html>
+<form action="http://127.0.0.1:3000/register/" method="post">
+    id : <input type="text" name="userId"><br>
+    pw : <input type="text" name="userPwd"><br>
+    com_code : <select name="com_code">
+        <option value="70000">70000</option>
+        <option value="80000" selected="selected">80000</option>
+        <option value="90000">90000</option>
+    </select> <br>
+    admin:  <input type="checkbox" name="admin" value="admin"><br>
+    permission:<input type="checkbox" name="permission" value="read">read
+    <input type="checkbox" name="permission" value="write">write<br>
+
+    <input type="submit">
+</form>
+
+
+
+---------------------------
+<list.ejs>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List</title>
+</head>
+
+<body>
+    <h1>User List</h1>
+    <div>
+        <% users.forEach(user =>{
+            %>
+            <ul>
+                <li>
+                    <b>user ID:</b>
+                    <%=user['ID']%>
+                </li>
+                <li>
+                    <b>user PW:</b>
+                    <%=user['PW']%>
+                </li>
+                <li>
+                    <b>Company Code:</b>
+                    <%=user['CODE']%>
+                </li>
+                <li>
+                    <b>Admin:</b>
+                    <%=user['admin']%>
+                </li>
+                <li>
+                    <b>Read:</b>
+                    <%=user['read']%>
+                </li>
+                <li><b>Write:</b>
+                    <%=user['write']%>
+                </li>
+            </ul>
+            <hr />
+            <%}) %>
+    </div>
+</body>
+
+</html>
+
+
+
+<server.js>
+const express = require(`express`)
+const bodyParser = require(`body-parser`)
+const fs = require(`fs`)
+const app = express()
+const router = express.Router();
+const port = 3000
+    /*  내일 해야하는 것
+     *1. login 빙글빙글
+     *2. 레지스터 보내면 팝업창 꺼투리기
+     *3. 중복되는 function 모듈화 / 간략화
+     *4. admin 누르면 write read 자동 체크 및 체크 불가능하게 
+     *5. 라우팅 정리하기
+     */
+
+
+//app.use(express.static('static/views'));
+app.set("view engine", "ejs")
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
+app.get('/', (req, res) => {
+    res.render("login", {})
+})
+
+
+app.get('/registerPage', (req, res) => {
+    res.render("register", {})
+})
+
+
+app.post('/userlogin', (req, res, next) => {
+    //응답 받았다.
+    let data = req.body
+    fs.readFile('./static/DB/user.json', 'utf8', (error, jsonFile) => {
+        //에러 발생시
+        if (error) return console.log(error)
+        const jsonData = JSON.parse(jsonFile)
+        const users = jsonData.User_list;
+
+        users.some(user => {
+            if (user[`ID`] == data[`ID`] && user[`PW`] == data[`PW`]) {
+                console.log("로그인 성공했음")
+                res.render(`main`, { user: user })
+                return true // 탈출문
+            } else {
+                console.log("로그인 실패")
+            }
+        });
+    });
+})
+
+
+//register
+app.post('/userSignup', (req, res) => {
+    let data = req.body
+    let sign_user_info = {}
+    if (data.reg_ID != undefined) {
+        sign_user_info.ID = data.reg_ID
+    }
+    if (data.reg_PW != undefined) {
+        sign_user_info.PW = data.reg_PW
+    }
+    if (data.code != undefined) {
+        sign_user_info.CODE = data.code
+    }
+    if (data.admin == undefined) {
+        sign_user_info.admin = false
+    } else { sign_user_info.admin = true }
+
+    if (data.read == undefined) {
+        sign_user_info.read = false
+    } else { sign_user_info.read = true }
+
+    if (data.write == undefined) {
+        sign_user_info.write = false
+    } else { sign_user_info.write = true }
+
+    let json_user_list = {
+        "User_list": []
+    }
+
+    fs.readFile('./static/DB/user.json', 'utf8', (error, jsonFile) => {
+        //에러 발생시
+        if (error) return console.log(error)
+        const jsonData = JSON.parse(jsonFile)
+        const users = jsonData.User_list;
+
+        users.forEach(user => {
+            json_user_list.User_list.push(user)
+        });
+
+        try {
+            json_user_list.User_list.push(sign_user_info)
+            fs.writeFileSync('./static/DB/user.json', JSON.stringify(json_user_list))
+        } catch (e) {
+            console.log(e)
+        }
+    });
+})
+
+
+app.get(`/userList`, (req, res) => {
+    fs.readFile('./static/DB/user.json', 'utf8', (error, jsonFile) => {
+        //에러 발생시
+        if (error) return console.log(error)
+        const jsonData = JSON.parse(jsonFile)
+        const users = jsonData.User_list;
+        res.render(`list`, { users: users })
+    })
+})
+
+
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+})
