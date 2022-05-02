@@ -1,6 +1,12 @@
-
-    {
-        "id" : "admin",
-        "pw" : "admin",
-        "permission" : "rw"
-    }
+[{
+    "id" : "admin",
+    "pw" : "admin",
+    "admin" : true,
+    "permission" : "rw"
+}, {
+    "id" : "won",
+    "pw" : "won",
+    "admin" : false,
+    "permission" : "r"
+}
+]

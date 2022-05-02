@@ -10,27 +10,9 @@
     <h2>Login</h2>
     <form action="/login" method="post">    
         <!--action : 작성한 정보를 어디로 보낼지 / method : 정보 전달시 어떤 http 메소드 사용할지-->
-        아이디 : <input type="text" id = "user_id" name="user_id"><br>
-        비밀번호 : <input id="user_pwd" name="user_pwd" type="password"/><br>
-        <input type="button" class="btnLogin" value="로그인" onclick="login();" />
+        아이디 : <input type="text" id = "id" name="id"><br>
+        비밀번호 : <input type="password" id="pw" name="pw"/><br>
+        <input type="submit" value="로그인" />
     </form>
-    
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    function login(){
-        var user = {};
-        user.userid = $('#user_id').val();
-        user.password = $('#user_pwd').val();
-        var ajax = $.ajax({
-            url : "/login",
-            data : user,
-            type : 'POST',
-            dataType:"JSON",
-            success : function(result){},
-        });
-        
-    }
-    
-</script>
 </html>
