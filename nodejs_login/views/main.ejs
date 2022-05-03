@@ -5,12 +5,60 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page</title>
-    <script src="../public/main.js"></script>
 </head>
+<script>
+    window.onload = function(){ 
+        let newbtn = document.getElementById("newbtn");
+        if(newbtn!=null){
+            newbtn.onclick= function(){
+                var child = window.open("/register","newbtnpopup","width:400, height:400");
+                newbtn.disabled = true;
+                child.addEventListener('load', () => {
+                    child.addEventListener('unload', () => {
+                    newbtn.disabled = false;
+                    })
+                })
+            }
+        }
+
+        let listbtn = document.getElementById("listbtn");
+        if(listbtn!=null){
+            listbtn.onclick = function(){
+                var child = window.open('/list', "listbtnpopup","width:400, height:400");
+                listbtn.disabled = true;
+                child.addEventListener('load', () => {
+                    child.addEventListener('unload', () => {
+                    newbtn.disabled = false;
+                    })
+                })
+            }
+        }
+
+        let alertbtn = document.getElementById("alertbtn");
+        if(alertbtn!=null){
+            alertbtn.onclick = function(){
+                alert("Read권한이 필요합니다.");
+            }
+        }
+    };
+</script>
 <body>
+    <h1>Main Page</h1><br>
     <% if(write) {%>
-        <button id="newbtn">신규버튼</button><br><br>
+        <p>신규회원 등록하기</p>
+        <h5 style="margin-top: 0;">(신규회원 등록은 Write 권한이 있는 사용자만 가능합니다.)</h5>
+        <button id="newbtn">신규버튼</button><br>
+        <br>
     <% } %>
-    <button id="listbtn">목록버튼</button><br>
+    <% if(read) {%>
+        <p>User List 조회하기 </p>
+        <h5 style="margin-top: 0;">(User List 조회는 Read 권한이 있는 사용자만 가능합니다.)</h5>
+        <button id="listbtn">목록버튼</button><br>
+    <% } %>
+    <% if(!read) {%>
+        <p>User List 조회하기 </p>
+        <h5 style="margin-top: 0;">(User List 조회는 Read 권한이 있는 사용자만 가능합니다.)</h5>
+        <button id="alertbtn">목록버튼</button><br>
+    <% } %>
 </body>
 </html>

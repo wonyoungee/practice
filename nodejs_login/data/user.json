@@ -1,12 +1,1 @@
-[{
-    "id" : "admin",
-    "pw" : "admin",
-    "admin" : true,
-    "permission" : "rw"
-}, {
-    "id" : "won",
-    "pw" : "won",
-    "admin" : false,
-    "permission" : "r"
-}
-]
+[{"id":"admin","pw":"admin","admin":true,"permission":"rw"},{"id":"won","pw":"won","admin":false,"permission":"r"},{"id":"w","pw":"w","comcode":"70000","admin":false,"permission":"w"},{"id":"no","pw":"no","comcode":"70000","admin":false,"permission":"undefined"},{"id":"dd","pw":"dd","comcode":"70000","admin":false,"permission":"undefined"}]
