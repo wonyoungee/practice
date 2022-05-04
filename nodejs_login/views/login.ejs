@@ -14,8 +14,17 @@
          PW : <input type="password" id="pw" name="pw" placeholder="비밀번호"/><br><br>
         <input type="submit" value="Login" />
     </form>
-    <% if(fail) {%>
+    <%switch(fail){
+        case 1 : %>
         <p style="color: red;">로그인 실패! ID와 PW를 다시 확인해주세요.</p>
-    <% } %>
+       <% break;
+        case 2 : %>
+        <p style="color: red;">로그인 실패! 휴면계정입니다.</p>
+        <% break;
+        case 3 : %>
+        <p style="color: red;">로그인 실패! 비활성화된 회사 코드입니다.</p>
+       <% break;
+       default : break;
+       } %>
 </body>
 </html>
