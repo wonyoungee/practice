@@ -10,21 +10,21 @@
     <h2> Login</h2>
     <form action="/login" method="post">    
         <!--action : 작성한 정보를 어디로 보낼지 / method : 정보 전달시 어떤 http 메소드 사용할지-->
-         ID : <input type="text" id = "id" name="id" placeholder="아이디"><br>
-         PW : <input type="password" id="pw" name="pw" placeholder="비밀번호"/><br><br>
+        ID : <input type="text" id = "id" name="id" placeholder="아이디"><br>
+        PW : <input type="password" id="pw" name="pw" placeholder="비밀번호"/><br><br>
         <input type="submit" value="Login" />
     </form>
     <%switch(fail){
         case 1 : %>
         <p style="color: red;">로그인 실패! ID와 PW를 다시 확인해주세요.</p>
-       <% break;
+        <% break;
         case 2 : %>
         <p style="color: red;">로그인 실패! 휴면계정입니다.</p>
         <% break;
         case 3 : %>
         <p style="color: red;">로그인 실패! 비활성화된 회사 코드입니다.</p>
-       <% break;
-       default : break;
-       } %>
+        <% break;
+        default : break;
+    } %>
 </body>
 </html>
