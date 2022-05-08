@@ -1,13 +1,13 @@
 import fs from "fs";
 import moment from 'moment';
 import { User } from "../dto/user";
-import { LoginContext } from "../../src/context/login_context";
-import { RegisterContext } from '../../src/context/register_context';
+import { LoginContext } from "../../context/login_context";
+import { RegisterContext } from '../../context/register_context';
 
 export class UserDB{
   //user.json에서 user정보 받아서 객체배열로 생성후 return
   readUserData(): Array<User>{
-      let dataBuffer = fs.readFileSync('./data/user.json',{encoding:'utf-8'});
+      let dataBuffer = fs.readFileSync('src/data/user.json',{encoding:'utf-8'});
       let userjson = JSON.parse(dataBuffer);
       
       let users : Array<User> = [];
@@ -20,7 +20,7 @@ export class UserDB{
 
   // user.json에 덮어쓰기.
   writeUserData(data:Array<User>):void{
-    fs.writeFileSync('./data/user.json', JSON.stringify(data))
+    fs.writeFileSync('src/data/user.json', JSON.stringify(data))
   }
 
   // 로그인 시각 기록

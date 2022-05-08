@@ -1,7 +1,7 @@
 import {LoginContext} from "../../context/login_context"
 import {ILoginPolicyResult, Policy} from "../policy"
-import { UserDB } from "../../../model/dao/userDB"
-import { User } from "../../../model/dto/user";
+import { UserDB } from "../../model/dao/userDB"
+import { User } from "../../model/dto/user";
 
 export class Identifier extends Policy{
     public apply(context: LoginContext): ILoginPolicyResult {

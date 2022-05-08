@@ -5,7 +5,7 @@ import { Account_Status } from "./policies/login/account_status";
 import { Contract_Period } from "./policies/login/contract_period";
 import { Identifier } from "./policies/login/identifier";
 import { ILoginPolicyResult, Policy } from "./policies/policy";
-import { UserDB } from "../model/dao/userDB";
+import { UserDB } from "./model/dao/userDB";
 
 const loginContext:LoginContext = new LoginContext(request_id, request_password);
 

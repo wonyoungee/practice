@@ -6,7 +6,7 @@ const req_permission = "r";
 import {RegisterContext} from "./context/register_context";
 import { ILoginPolicyResult} from "./policies/policy";
 import { Duplicate_ID } from './policies/register/Duplicate_ID';
-import {UserDB} from '../model/dao/userDB';
+import {UserDB} from './model/dao/userDB';
 
 const register_context:RegisterContext = new RegisterContext(req_id,req_pw,req_comcode,req_isAdmin,req_permission);
 

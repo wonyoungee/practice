@@ -4,7 +4,7 @@ import { Company } from "../dto/company";
 //company.json에서 company정보 받아서 객체배열로 생성후 return
 export class CompanyDB{
     readComData():Array<Company>{
-        let dataBuffer = fs.readFileSync('./data/company.json',{encoding:'utf-8'});
+        let dataBuffer = fs.readFileSync('src/data/company.json',{encoding:'utf-8'});
         let comjson = JSON.parse(dataBuffer);
         let coms : Array<Company> = [];
         comjson.forEach((c: { comcode: string; expdate: string; }) => {

@@ -1,5 +1,0 @@
-[
-    {"id":"admin","pw":"admin","comcode":"80000","admin":true,"permission":"rw","logdate":"2022-05-08 16:15:42","comExpdate":"2022-07-30"},
-    {"id":"expacc","pw":"expacc","comcode":"80000","admin":true,"permission":"rw","logdate":"2022-03-08 16:15:42","comExpdate":"2022-07-30"},
-    {"id":"expcom","pw":"expcom","comcode":"70000","admin":true,"permission":"rw","logdate":"2022-05-08 16:15:42","comExpdate":"2022-05-02"}
-]

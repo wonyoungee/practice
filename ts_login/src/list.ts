@@ -1,4 +1,4 @@
-import { UserDB } from '../model/dao/userDB';
+import { UserDB } from './model/dao/userDB';
 
 console.log("<User List>")
 new UserDB().readUserData().forEach(user => {
