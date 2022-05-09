@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+</head>
+<body>
+    <h2> Login</h2>
+    <form action="/login" method="post">    
+        <!--action : 작성한 정보를 어디로 보낼지 / method : 정보 전달시 어떤 http 메소드 사용할지-->
+        ID : <input type="text" id = "id" name="id" placeholder="아이디"><br>
+        PW : <input type="password" id="pw" name="pw" placeholder="비밀번호"/><br><br>
+        <input type="submit" value="Login" />
+    </form>
+    <p style="color: red;"><%=fail%></p>
+</body>
+</html>

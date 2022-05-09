@@ -1,0 +1,10 @@
+import { LoginContext } from "../context/login_context";
+
+export interface ILoginPolicyResult {
+    status: boolean;
+    message?: string; // ? : 설정을 해도 되고 안해도 되는 값
+}
+
+export abstract class Policy {
+    public abstract apply(context: LoginContext): ILoginPolicyResult;
+}
