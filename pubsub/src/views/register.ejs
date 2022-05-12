@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Popup</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<script>
+    window.onload = function(){
+        let responseId = "<%= responseId %>";
+    
+        $('#submit').click(function(){
+            $.ajax({
+                url:'/register',
+                type:'POST',
+                data:$('#form').serialize(), 
+                dataType: 'json',
+                success:function(result) {
+                    if(typeof(result.data)=="string"){
+                        alert(result.data)
+                    }
+                    else{
+                        window.opener.postMessage({responseId:responseId,user:result.data}, "http://localhost:3000/");
+                    }
+                }
+            })
+        });
+    };
+</script>
+<body>
+    <h2>신규등록하기</h2>
+    <form id="form">    
+        <!--action : 작성한 정보를 어디로 보낼지 / method : 정보 전달시 어떤 http 메소드 사용할지-->
+        ID : <input type="text" name="id" required/><br>
+        PW : <input type="password"name="pw" required/><br>
+        Com_code : <select name="comcode">
+                        <option value="70000" selected>70000</option>
+                        <option value="80000">80000</option>
+                        <option value="90000">90000</option>
+                    </select><br>
+        Admin : <input type="checkbox" name="admincheck" value=true><br>
+        Permission : <input type="checkbox" name="permission" value="r">Read
+                        <input type="checkbox" name="permission" value="w">Write<br><br>
+        <input type="button" id="submit" value="등록하기">
+    </form>
+    <p style="color: red;"><%=result%></p>
+</body>
+</html>
