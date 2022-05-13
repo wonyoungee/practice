@@ -1,0 +1,1 @@
+export const router_filter_registry = new Map<string, any>(); // path, router정보

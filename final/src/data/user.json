@@ -1,0 +1,7 @@
+[{"id":"expacc","pw":"expacc","comcode":"80000","admin":true,"permission":"rw","logdate":"2022-03-08 16:15:42","comExpdate":"2022-07-30"},
+    {"id":"expcom","pw":"expcom","comcode":"70000","admin":true,"permission":"rw","logdate":"2022-05-08 16:15:42","comExpdate":"2022-05-02"},
+    {"id":"r","pw":"r","comcode":"80000","admin":true,"permission":"r","logdate":"2022-05-09 20:22:12","comExpdate":"2022-07-30"},
+    {"id":"w","pw":"w","comcode":"80000","admin":true,"permission":"w","logdate":"2022-05-09 20:23:51","comExpdate":"2022-07-30"},
+    {"id":"no","pw":"no","comcode":"90000","permission":"undefined","logdate":"2022-05-09 20:27:24","comExpdate":"2023-01-01"},
+    {"id":"admin","pw":"admin","comcode":"80000","admin":true,"permission":"rw","logdate":"2022-05-13 13:19:37","comExpdate":"2022-07-30"}
+]

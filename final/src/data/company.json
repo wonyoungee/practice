@@ -1,0 +1,13 @@
+[{
+    "comcode" : "70000",
+    "expdate" : "2022-05-02",
+    "limituser" : 5
+},{
+    "comcode" : "80000",
+    "expdate" : "2022-07-30",
+    "limituser" : 10
+},{
+    "comcode" : "90000",
+    "expdate" : "2023-01-01",
+    "limituser" : 15
+}]
