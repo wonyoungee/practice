@@ -18,11 +18,10 @@ import { router_registry } from "../registry/router_registry"
 //         ]
 //     }
 // }
-//a['url']= "jj"
 
 export const get = function(path: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        router_registry.set(target,
+        router_registry.set(target.constructor.name,
             {paths: 
                 [{
                     url: path,
@@ -40,11 +39,14 @@ export const get = function(path: string) {
 
 export const post = function(path: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        router_registry.set(path,{
-            method: "post",
-            target: target.constructor,
-            propertyKey //메소드 이름
-        });
+        router_registry.get(target.constructor.name).paths.push(
+            {
+                url: path,
+                method: "post",
+                propertyKey: propertyKey,
+                filter: [{}]
+            }
+        )
     }
 }
 

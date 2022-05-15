@@ -8,6 +8,7 @@ export class LoginRouter {
     @get("/login")
     loginView(context: ExecutionContext) {
         console.log("get");
+        console.log(context.req.body.request_id);
     }
 
     // ajax 요청 할것
