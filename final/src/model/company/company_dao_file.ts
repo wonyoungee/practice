@@ -12,7 +12,7 @@ export class CompanyDao implements ICompayDao {
         let comjson = JSON.parse(dataBuffer);
         let coms : Array<Company> = [];
         comjson.forEach((c: { comcode: string; expdate: string; limituser:number;}) => {
-          coms.push(new Company(c.comcode, c.expdate, c.limituser));  
+            coms.push(new Company(c.comcode, c.expdate, c.limituser));  
         });
         return coms;
         //throw new Error("Method not implemented.");

@@ -1,4 +1,4 @@
-import e, { Router } from 'express';
+import e from 'express';
 import moment from 'moment';
 import { ExecutionContext } from '../context/execution_context';
 import { get, permission, post } from '../decorator';
@@ -8,7 +8,7 @@ import { User } from '../model/user/user';
 export class UserRouter {
     @get("/user/:userid")
     getUser(context: ExecutionContext) {
-        
+        console.log("getuser");
     }
 
     // ajax로 요청
@@ -30,13 +30,11 @@ export class UserRouter {
             console.log(error.message);
             //context.res.render('login',{fail:error.message});
         }
-        // 정책 실팽
-        // 결과 전송
     }
 
     @get("/user/register")
     registerUserView(context: ExecutionContext) {
-
+        console.log("get register");
     }
 
 }

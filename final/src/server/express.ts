@@ -13,7 +13,7 @@ import { router_filter_registry } from "../registry/router_filter_registry";
 export const ServerFactory = {
 
     async create(config: IServerConfiguration): Promise<e.Express> {
-        /* config 변수 안에 {
+        /* config  {
             database: "file",
             router: [LoginRouter, UserRouter],
             policy: {
@@ -30,8 +30,31 @@ export const ServerFactory = {
         app.use(bodyParser.urlencoded({ extended : false }));
         app.use(bodyParser.json())
         
-        
-        /*
+        config.router.forEach((klass) => { // klass = LoginRouter 클래스
+            const routerMap = router_registry.get(klass.name); //"UserRouter" : key
+            console.log(routerMap);
+            routerMap.paths.forEach(pathInfo => { // routerMap : {paths : [{}...]}
+                app[pathInfo.method](pathInfo.url, (req: any, res: any) => {
+                    
+                    // if (pathInfo.filters) {
+                    //     for(const filter of pathInfo.filters) {
+                    //         if(await filter() === false) {
+                    //             res.status(403);
+                    //             return false;
+                    //         }
+                    //     }
+                    // }
+                    
+                    // context 생성
+                    let executionContext = new ExecutionContext(req, res, userdao, companydao);
+                    // 라우터 연결
+                    const router = new klass(); // router = new LoginRouter();
+                    router[pathInfo.propertyKey](executionContext); // loginProcess(context);
+                });
+            });
+        })
+
+                /*
         for(const [path, router] of router_registry.entries()){
             app[router.method](path, async function(req,res){
 
@@ -55,35 +78,6 @@ export const ServerFactory = {
                 // }
             })
         }  */
-
-        
-        config.router.forEach((klass) => { // klass = LoginRouter 클래스
-            const routerMap = router_registry.get(klass.name); //"UserRouter" : key
-            console.log(routerMap);
-            routerMap.paths.forEach(pathInfo => { // routerMap : {paths : [{}...]}
-                app[pathInfo.method](pathInfo.url, (req: any, res: any) => { 
-                    // app.get('/login', function(req, res){
-
-                    //})
-                    
-                    
-                    // if (pathInfo.filters) {
-                    //     for(const filter of pathInfo.filters) {
-                    //         if(await filter() === false) {
-                    //             res.status(403);
-                    //             return false;
-                    //         }
-                    //     }
-                    // }
-                    
-                    // context 생성
-                    let executionContext = new ExecutionContext(req, res, userdao, companydao);
-                    // 라우터 연결
-                    const router = new klass(); // router = new LoginRouter();
-                    router[pathInfo.propertyKey](executionContext); // loginProcess(context);
-                });
-            });
-        })
 
         return app;
     }

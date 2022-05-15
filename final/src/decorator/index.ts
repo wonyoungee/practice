@@ -21,43 +21,49 @@ import { router_registry } from "../registry/router_registry"
 
 export const get = function(path: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        router_registry.set(target.constructor.name,
-            {paths: 
-                [{
-                    url: path,
-                    method: "get",
-                    propertyKey: propertyKey,
-                    filter: [{}]
-                }]
-            }
-        )
-        //     method: "get",
-        //     target: target.constructor,
-        //     propertyKey //메소드 이름
+        if(router_registry.get(target.constructor.name)==null){
+            router_registry.set(target.constructor.name, {paths:[]})
+        }
+        let targetName = router_registry.get(target.constructor.name);
+
+        targetName.paths.push({
+            url: path,
+            method: "get",
+            propertyKey: propertyKey, //메소드 이름
+            filter: []
+        })
     }
 }
 
 export const post = function(path: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        router_registry.get(target.constructor.name).paths.push(
-            {
-                url: path,
-                method: "post",
-                propertyKey: propertyKey,
-                filter: [{}]
-            }
-        )
+        if(router_registry.get(target.constructor.name)==null){
+            router_registry.set(target.constructor.name, {paths:[]})
+        }
+        let targetName = router_registry.get(target.constructor.name);
+        
+        targetName.paths.push({
+            url: path,
+            method: "post",
+            propertyKey: propertyKey, //메소드 이름
+            filter: []
+        })
     }
 }
 
 export const permission = function(role: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         //permission의 정책
+        router_registry.get(target.constructor.name).paths.find(i=>i.propertyKey==propertyKey).filter.push({
+            name: "permission",
+            role: role
+        })
+        console.log(router_registry);
     }
 }
 
 export const allowComCode = function(com_code: string[]):any {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-
+        
     }
 }
